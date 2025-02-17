@@ -11,13 +11,15 @@ load_dotenv()
 
 # 获取 newsapi的key
 userApi = os.getenv("API_KEY")
+userProxy = os.getenv("PROXY_URL")
+
 
 if not userApi:
     print("未能从 .env 文件中获取 USER_TOKEN，请检查配置。")
     exit(1)
-
-os.environ['HTTP_PROXY'] = 'http://127.0.0.1:10809'
-os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:10809'
+#写入你的代理
+os.environ['HTTP_PROXY'] = userProxy
+os.environ['HTTPS_PROXY'] = userProxy
 
 def sanitize_filename(filename):
     """ 清理文件名，移除不允许的字符 """
