@@ -15,7 +15,10 @@ userProxy = os.getenv("PROXY_URL")
 
 
 if not userApi:
-    print("未能从 .env 文件中获取 USER_TOKEN，请检查配置。")
+    print("未能从 .env 文件中获取 API_KEY ，请检查配置。")
+    exit(1)
+if not userProxy:
+    print("未能从 .env 文件中获取 PROXY_URL ，请检查配置。")
     exit(1)
 #写入你的代理
 os.environ['HTTP_PROXY'] = userProxy
