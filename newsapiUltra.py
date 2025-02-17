@@ -4,6 +4,18 @@ import re
 from newspaper import Article
 from datetime import datetime, timedelta
 
+from dotenv import load_dotenv
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
+
+# 获取 newsapi的key
+userApi = os.getenv("API_KEY")
+
+if not userApi:
+    print("未能从 .env 文件中获取 USER_TOKEN，请检查配置。")
+    exit(1)
+
 os.environ['HTTP_PROXY'] = 'http://127.0.0.1:10809'
 os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:10809'
 
@@ -64,7 +76,7 @@ def fetch_top_headlines(country="us", days=7):
     url = "https://newsapi.org/v2/top-headlines"
     params = {
         "country": country,
-        "apiKey": "",替换为你的api
+        "apiKey": userApi,
         "q": "Trump",
         "from": from_date,  # 限制新闻来源日期
     }

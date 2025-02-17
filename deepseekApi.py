@@ -3,9 +3,19 @@ import os
 import glob
 import datetime
 
+from dotenv import load_dotenv
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
+# 获取 user_token
+user_token = os.getenv("USER_TOKEN")
+
+if not user_token:
+    print("未能从 .env 文件中获取 USER_TOKEN，请检查配置。")
+    exit(1)
+
 # 配置API地址和userToken
 api_url = "http://localhost:8000/v1/chat/completions"  # API地址
-user_token = ""  # 替换为你的userToken
 
 # 请求头
 headers = {
