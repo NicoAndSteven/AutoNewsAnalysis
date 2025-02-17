@@ -64,7 +64,7 @@ def fetch_top_headlines(country="us", days=7):
     url = "https://newsapi.org/v2/top-headlines"
     params = {
         "country": country,
-        "apiKey": "1b9bc1a956cf439a956d145672724762",
+        "apiKey": "",替换为你的api
         "q": "Trump",
         "from": from_date,  # 限制新闻来源日期
     }
