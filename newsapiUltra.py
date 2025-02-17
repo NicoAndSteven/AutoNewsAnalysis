@@ -13,7 +13,7 @@ def sanitize_filename(filename):
 
 def fetch_article_content(url):
     """
-    获取新闻网页的正文内容，并将内容保存到项目下的按日期命名的文件夹中
+    获取新闻网页的正文内容，并将内容保存到 DailyNews 目录下的按日期命名的文件夹中
     """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -33,7 +33,7 @@ def fetch_article_content(url):
 
         # 获取当前系统时间，作为文件夹名称
         current_date = datetime.now().strftime('%Y.%m.%d')
-        folder_path = os.path.join(os.getcwd(), current_date)
+        folder_path = os.path.join(os.getcwd(), "DailyNews", current_date)
 
         # 确保日期命名的文件夹存在
         os.makedirs(folder_path, exist_ok=True)

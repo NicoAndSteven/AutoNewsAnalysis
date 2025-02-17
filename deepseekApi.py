@@ -13,15 +13,18 @@ headers = {
     "Content-Type": "application/json"  # 设置Content-Type为JSON
 }
 
+# 获取当前日期并格式化
 today = datetime.datetime.now().strftime("%Y.%m.%d")
-input_folder = today  # 同级目录下的输入文件夹
-output_folder = f"{today}-analysis"  # 分析结果保存目录
+
+# 输入目录改为 DailyNews 下对应日期的文件夹
+input_folder = os.path.join("DailyNews", today)  # DailyNews 下的日期文件夹
+output_folder = os.path.join("Analysis", f"{today}-analysis")  # 分析结果保存目录，放在 Analysis 文件夹下
 
 if not os.path.exists(input_folder):
     print(f"输入目录 '{input_folder}' 不存在，请检查目录名称是否正确。")
     exit(1)
 
-# 如果输出目录不存在，则创建
+# 如果 Analysis 文件夹不存在，则创建
 os.makedirs(output_folder, exist_ok=True)
 
 # =================== 遍历txt文件 =====================
@@ -39,7 +42,7 @@ for txt_file in txt_files:
 
     # 构造请求数据
     data = {
-        "model": "deepseek-r1",  # 模型名称
+        "model": "deepseek-chat",  # 模型名称
         "messages": [
             {
                 "role": "user",
