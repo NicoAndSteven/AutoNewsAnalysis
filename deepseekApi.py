@@ -5,7 +5,7 @@ import datetime
 
 # 配置API地址和userToken
 api_url = "http://localhost:8000/v1/chat/completions"  # API地址
-user_token = "xqUajyaIBfRNd6i2dmKy45fH1QYVXinwwSPhUxqEkvqkOMpe4X82lqIWsxnUiqOO"  # 替换为你的userToken
+user_token = ""  # 替换为你的userToken
 
 # 请求头
 headers = {
