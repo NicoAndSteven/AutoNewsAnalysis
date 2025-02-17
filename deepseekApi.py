@@ -74,7 +74,10 @@ for txt_file in txt_files:
     except requests.exceptions.RequestException as e:
         analysis_text = f"请求发生异常: {e}"
         print(analysis_text)
-
+    #判断服务器繁忙响应逻辑
+    if len(analysis_text) <50:
+        print(analysis_text)
+        continue
     # 将结果保存到输出目录，文件名为 原文件名-analysis.txt
     base_name = os.path.basename(txt_file)
     output_file = os.path.join(output_folder, f"{os.path.splitext(base_name)[0]}-analysis.txt")
