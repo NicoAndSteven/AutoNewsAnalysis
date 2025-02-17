@@ -1,4 +1,7 @@
 import requests
+import os
+import glob
+import datetime
 
 # 配置API地址和userToken
 api_url = "http://localhost:8000/v1/chat/completions"  # API地址
@@ -10,33 +13,58 @@ headers = {
     "Content-Type": "application/json"  # 设置Content-Type为JSON
 }
 
-# 请求体
-data = {
-    "model": "deepseek",  # 模型名称
-    "messages": [
-        {
-            "role": "user",  # 用户角色
-            "content": "你好，你能做什么？"  # 用户输入
-        }
-    ],
-    "stream": False  # 是否使用流式响应
-}
+today = datetime.datetime.now().strftime("%Y.%m.%d")
+input_folder = today  # 同级目录下的输入文件夹
+output_folder = f"{today}-analysis"  # 分析结果保存目录
 
-# 发送POST请求
-try:
-    response = requests.post(api_url, headers=headers, json=data)
+if not os.path.exists(input_folder):
+    print(f"输入目录 '{input_folder}' 不存在，请检查目录名称是否正确。")
+    exit(1)
 
-    # 检查响应状态码
-    if response.status_code == 200:
-        # 解析响应内容
-        result = response.json()
-        print("API响应内容:")
-        print(result["choices"][0]["message"]["content"])  # 输出助手的回复
-    else:
-        # 请求失败时的处理
-        print(f"请求失败，状态码: {response.status_code}")
-        print("错误信息:", response.text)
+# 如果输出目录不存在，则创建
+os.makedirs(output_folder, exist_ok=True)
 
-except requests.exceptions.RequestException as e:
-    # 处理请求异常
-    print("请求发生异常:", e)
+# =================== 遍历txt文件 =====================
+txt_files = glob.glob(os.path.join(input_folder, "*.txt"))
+if not txt_files:
+    print(f"在目录 '{input_folder}' 下未找到任何txt文件。")
+    exit(1)
+
+for txt_file in txt_files:
+    with open(txt_file, "r", encoding="utf-8") as f:
+        news_content = f.read()
+
+    # 构造分析提示，要求模型从政治、成因、影响、未来导向等多个维度进行分析
+    prompt = f"请从政治、成因、影响、未来导向等多个维度对以下新闻内容进行全面分析：\n\n{news_content}"
+
+    # 构造请求数据
+    data = {
+        "model": "deepseek-r1",  # 模型名称
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "stream": False  # 是否使用流式响应
+    }
+
+    try:
+        response = requests.post(api_url, headers=headers, json=data)
+        if response.status_code == 200:
+            result = response.json()
+            analysis_text = result["choices"][0]["message"]["content"]
+            print(f"文件 '{txt_file}' 分析成功。")
+        else:
+            analysis_text = f"请求失败，状态码: {response.status_code}\n错误信息: {response.text}"
+            print(analysis_text)
+    except requests.exceptions.RequestException as e:
+        analysis_text = f"请求发生异常: {e}"
+        print(analysis_text)
+
+    # 将结果保存到输出目录，文件名为 原文件名-analysis.txt
+    base_name = os.path.basename(txt_file)
+    output_file = os.path.join(output_folder, f"{os.path.splitext(base_name)[0]}-analysis.txt")
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(analysis_text)
+    print(f"分析结果已保存到 '{output_file}'\n")

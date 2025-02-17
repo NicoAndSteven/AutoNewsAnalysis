@@ -40,14 +40,9 @@ def fetch_article_content(url):
 
         # 使用文章标题和发布时间生成安全的文件名
         title = article.title if article.title else "news_article"
-        published_time = article.publish_date
-        if published_time:
-            published_time_str = published_time.strftime('%Y-%m-%d_%H-%M-%S')
-        else:
-            published_time_str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')  # 使用当前时间作为备用
 
         safe_title = sanitize_filename(title)
-        file_path = os.path.join(folder_path, f"{safe_title}_{published_time_str}.txt")
+        file_path = os.path.join(folder_path, f"{safe_title}.txt")
 
         # 保存正文内容
         with open(file_path, "w", encoding="utf-8") as f:
