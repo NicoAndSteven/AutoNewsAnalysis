@@ -2,7 +2,7 @@ import requests
 import os
 import glob
 import datetime
-
+import time
 from dotenv import load_dotenv
 
 # 加载 .env 文件中的环境变量
@@ -43,6 +43,27 @@ if not txt_files:
     print(f"在目录 '{input_folder}' 下未找到任何txt文件。")
     exit(1)
 
+def send_request(prompt):
+    """发送请求并返回分析文本"""
+    data = {
+        "model": "deepseek-chat",
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "stream": False
+    }
+    try:
+        response = requests.post(api_url, headers=headers, json=data)
+        if response.status_code == 200:
+            result = response.json()
+            return result["choices"][0]["message"]["content"]
+        else:
+            print(f"请求失败，状态码: {response.status_code}错误信息: {response.text}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"请求发生异常: {e}")
+        return None
+
 for txt_file in txt_files:
     with open(txt_file, "r", encoding="utf-8") as f:
         news_content = f.read()
@@ -50,37 +71,21 @@ for txt_file in txt_files:
     # 构造分析提示，要求模型从政治、成因、影响、未来导向等多个维度进行分析
     prompt = f"请从政治、成因、影响、未来导向等多个维度对以下新闻内容进行全面分析：\n\n{news_content}"
 
-    # 构造请求数据
-    data = {
-        "model": "deepseek-chat",  # 模型名称
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        "stream": False  # 是否使用流式响应
-    }
+    # 初次请求
+    analysis_text = send_request(prompt)
 
-    try:
-        response = requests.post(api_url, headers=headers, json=data)
-        if response.status_code == 200:
-            result = response.json()
-            analysis_text = result["choices"][0]["message"]["content"]
-            print(f"文件 '{txt_file}' 分析成功。")
-        else:
-            analysis_text = f"请求失败，状态码: {response.status_code}\n错误信息: {response.text}"
-            print(analysis_text)
-    except requests.exceptions.RequestException as e:
-        analysis_text = f"请求发生异常: {e}"
-        print(analysis_text)
-    #判断服务器繁忙响应逻辑
-    if len(analysis_text) <50:
-        print(analysis_text)
-        continue
-    # 将结果保存到输出目录，文件名为 原文件名-analysis.txt
-    base_name = os.path.basename(txt_file)
-    output_file = os.path.join(output_folder, f"{os.path.splitext(base_name)[0]}-analysis.txt")
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(analysis_text)
-    print(f"分析结果已保存到 '{output_file}'\n")
+    # 如果返回内容过短，休眠10秒后重试
+    if analysis_text and len(analysis_text) < 50:
+        print("分析结果过短，可能是服务器繁忙，20秒后重试...")
+        time.sleep(20)
+        analysis_text = send_request(prompt)
+
+    if analysis_text:
+        base_name = os.path.basename(txt_file)
+        output_file = os.path.join(output_folder, f"{os.path.splitext(base_name)[0]}-analysis.txt")
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write(analysis_text)
+        print(f"分析结果已保存到 '{output_file}'\n")
+    else:
+        print(f"文件 '{txt_file}' 分析失败。")
+
