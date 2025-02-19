@@ -4,4 +4,4 @@
 
 获取NEWSAPI的API_KEY https://newsapi.org
 
-![image-20250219101429743](C:\Users\Coco\AppData\Roaming\Typora\typora-user-images\image-20250219101429743.png)
+![](D:\AI_AUTO\AutoNewsAnalysis\note\newsapi.png)
