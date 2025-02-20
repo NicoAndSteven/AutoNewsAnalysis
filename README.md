@@ -56,4 +56,8 @@ pm2 reload deepseek-free-api
 pm2 stop deepseek-free-api
 ```
 
+所有的api_key、token、代理链接配置在.env文件
+
+安装dotenv库即可，以键值对的形式存储如API_KEY="XXXXXXXXXXXX"
+
 ![wheretoken](https://github.com/NicoAndSteven/AutoNewsAnalysis/raw/main/note/wheretoken.png)
