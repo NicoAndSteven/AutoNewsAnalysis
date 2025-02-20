@@ -56,3 +56,4 @@ pm2 reload deepseek-free-api
 pm2 stop deepseek-free-api
 ```
 
+![wheretoken](https://github.com/NicoAndSteven/AutoNewsAnalysis/raw/main/note/wheretoken.png)
