@@ -1,12 +1,12 @@
 # AutoNewsAnalysis
 
-部署项目https://github.com/LLM-Red-Team/deepseek-free-api.git作为响应文本分析的服务器
+部署项目https://github.com/LLM-Red-Team/deepseek-free-api.git 作为响应文本分析的服务器
 
 获取NEWSAPI的API_KEY https://newsapi.org
 
-![](D:\AI_AUTO\AutoNewsAnalysis\note\newsapi.png)
+![](note\newsapi.png)
 
-## 原生部署
+## deepseek-free-api原生部署
 
 请先安装好Node.js环境并且配置好环境变量，确认node命令可用。
 
