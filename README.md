@@ -4,7 +4,7 @@
 
 获取NEWSAPI的API_KEY https://newsapi.org
 
-![](note\newsapi.png)
+![newsapi界面](https://github.com/NicoAndSteven/AutoNewsAnalysis/raw/main/note/newsapi.png)
 
 ## deepseek-free-api原生部署
 
